@@ -28,7 +28,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.9.0'
+	implementation group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.857'
 }
 
 tasks.named('test') {
