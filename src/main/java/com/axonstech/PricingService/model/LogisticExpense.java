@@ -33,20 +33,38 @@ public class LogisticExpense {
     @DynamoDBHashKey(attributeName = "ID")
     private String id;
 
+    @DynamoDBAttribute(attributeName = "COMPANY_CODE")
+    private String companyCode;
+
+    @DynamoDBAttribute(attributeName = "ZONE_AREA")
+    private String zoneArea;
+
+    @DynamoDBAttribute(attributeName = "ZONE_CLASS_PRICE")
+    private String zoneClassPrice;
+
     @DynamoDBRangeKey(attributeName = "EFFECTIVE_DATE")
     private String effectiveDate;
+
+    @DynamoDBAttribute(attributeName = "PRODUCT_GROUP")
+    private String productGroup;
 
     @DynamoDBAttribute(attributeName = "PRODUCT_GROUP_NAME")
     private String productGroupName;
 
+    @DynamoDBAttribute(attributeName = "PRODUCT_SUB_GROUP1")
+    private String productSubGroup1;
+
     @DynamoDBAttribute(attributeName = "PRODUCT_SUB_GROUP1_NAME")
     private String productSubGroup1Name;
+
+    @DynamoDBAttribute(attributeName = "PRODUCT_SUB_GROUP2")
+    private String productSubGroup2;
 
     @DynamoDBAttribute(attributeName = "PRODUCT_SUB_GROUP2_NAME")
     private String productSubGroup2Name;
 
     @DynamoDBAttribute(attributeName = "LOGISTIC_EXP")
-    private Long logisticExp;
+    private Double logisticExp;
 
     @DynamoDBAttribute(attributeName = "EXPIRE_DATE")
     @DynamoDBTypeConverted( converter = LocalDateConverter.class )

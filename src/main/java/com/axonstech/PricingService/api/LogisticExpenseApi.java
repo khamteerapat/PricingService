@@ -3,9 +3,12 @@ package com.axonstech.PricingService.api;
 import com.axonstech.PricingService.model.LogisticExpense;
 import com.axonstech.PricingService.payload.LogisticExpensePayload;
 import com.axonstech.PricingService.service.LogisticExpenseService;
+import com.axonstech.PricingService.utils.ExcelHelper;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -36,8 +39,8 @@ public class LogisticExpenseApi {
     }
 
     @PutMapping("/update")
-    public String updateLogisticExpense(@Valid @RequestBody LogisticExpensePayload logisticExpensePayload){
-        logisticExpenseService.updateLogisticExpense(logisticExpensePayload);
+    public String updateLogisticExpense(@RequestParam String key, @RequestParam String sortKey,@Valid @RequestBody LogisticExpensePayload logisticExpensePayload){
+        logisticExpenseService.updateLogisticExpense(key,sortKey,logisticExpensePayload);
         return RETURN_MESSAGE;
     }
 
@@ -45,5 +48,16 @@ public class LogisticExpenseApi {
     public String deleteLogisticExpense(@RequestParam String key, @RequestParam String sortKey){
         logisticExpenseService.deleteLogisticExpense(key,sortKey);
         return RETURN_MESSAGE;
+    }
+
+    @PostMapping("/upload")
+    public String uploadLogisticExpense(@RequestBody MultipartFile file){
+        if (ExcelHelper.hasExcelFormat(file)) {
+            logisticExpenseService.uploadLogisticExpense(file);
+            return RETURN_MESSAGE;
+        }
+        else{
+            return "Please upload an excel file!";
+        }
     }
 }

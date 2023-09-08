@@ -7,20 +7,19 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @ToString
 public class LogisticExpensePayload {
-    @NotNull
-    private LocalDateTime createDatetime;
-    @NotNull
-    @Size(max = 50)
-    private String createBy;
-    private LocalDateTime lastUpdateDatetime;
-    @Size(max = 50)
-    private String lastUpdateBy;
+//    @NotNull
+//    private LocalDateTime createDatetime;
+//    @NotNull
+//    @Size(max = 50)
+//    private String createBy;
+//    private LocalDateTime lastUpdateDatetime;
+//    @Size(max = 50)
+//    private String lastUpdateBy;
     @NotNull
     private String companyCode;
     @NotNull
@@ -45,7 +44,7 @@ public class LogisticExpensePayload {
     @NotNull
     private String productSubGroup2Name;
     @NotNull
-    private Long logisticExp;
+    private Double logisticExp;
     private LocalDate expireDate;
     @NotNull
     private String status;
