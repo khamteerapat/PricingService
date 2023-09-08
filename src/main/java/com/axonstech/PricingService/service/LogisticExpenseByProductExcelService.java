@@ -6,6 +6,8 @@ import com.axonstech.PricingService.enumeration.LogisticExpenseByProductExcelCol
 import com.axonstech.PricingService.exceptions.LogisticExpenseByProductExcelInvalidException;
 import com.axonstech.PricingService.model.LogisticExpenseByProduct;
 import com.axonstech.PricingService.utils.KeyMappingUtils;
+import com.axonstech.PricingService.utils.LogUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -22,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service
+@Slf4j
 public class LogisticExpenseByProductExcelService {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
@@ -48,12 +51,16 @@ public class LogisticExpenseByProductExcelService {
     }
 
     private void processExcelAndSave(Iterator<Row> rowIterator,String companyCode){
+        LogUtils.beginInfo(log,"Begin Extract Excel");
         List<LogisticExpenseByProduct> logisticByProductList = new ArrayList<>();
         while(rowIterator.hasNext()){
             Row row = rowIterator.next();
             toBeProcessingRow(row,logisticByProductList,companyCode);
         }
+        LogUtils.endInfo(log,"End Extract Excel");
+        LogUtils.beginInfo(log,"Begin Save");
         dynamoDBMapper.batchSave(logisticByProductList);
+        LogUtils.endInfo(log,"End Save");
     }
 
     private void toBeProcessingRow(Row row,List<LogisticExpenseByProduct> logisticByProductList,String companyCode){
