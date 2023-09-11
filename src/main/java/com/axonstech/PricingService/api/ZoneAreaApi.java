@@ -4,8 +4,10 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.axonstech.PricingService.model.ZoneArea;
 import com.axonstech.PricingService.payload.ZoneAreaRequestPayload;
+import com.axonstech.PricingService.payload.api.ApiResponsePayload;
 import com.axonstech.PricingService.service.ZoneAreaDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,8 +30,10 @@ public class ZoneAreaApi {
     }
 
     @PostMapping("/list")
-    public List<ZoneArea> getZoneAreaList(){
-        //todo select data from dynamodb ZoneArea Table
-        return new ArrayList<>();
+    public ResponseEntity<ApiResponsePayload> getZoneAreaList(){
+        //select data from dynamodb ZoneArea Table
+        List<ZoneAreaRequestPayload> responseList = new ArrayList<>();
+        ApiResponsePayload<List<ZoneAreaRequestPayload>> response = new ApiResponsePayload<>("Success",responseList,null);
+        return ResponseEntity.ok(response);
     }
 }
