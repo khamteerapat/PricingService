@@ -11,6 +11,4 @@ public class KeyMappingUtils {
         }
         return concatString.toString();
     }
-
-    private KeyMappingUtils(){}
 }

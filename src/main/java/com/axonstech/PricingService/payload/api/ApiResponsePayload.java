@@ -1,6 +1,5 @@
 package com.axonstech.PricingService.payload.api;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
