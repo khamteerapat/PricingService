@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApiPaginationPayload {
-
     private Integer currentPage;
     private Integer totalPage;
     private Integer currentCount;
