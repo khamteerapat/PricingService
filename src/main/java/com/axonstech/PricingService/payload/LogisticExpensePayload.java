@@ -12,16 +12,6 @@ import java.time.LocalDate;
 @Setter
 @ToString
 public class LogisticExpensePayload {
-//    @NotNull
-//    private LocalDateTime createDatetime;
-//    @NotNull
-//    @Size(max = 50)
-//    private String createBy;
-//    private LocalDateTime lastUpdateDatetime;
-//    @Size(max = 50)
-//    private String lastUpdateBy;
-    @NotNull
-    private String companyCode;
     @NotNull
     @Size(max = 20)
     private String zoneArea;
@@ -29,8 +19,7 @@ public class LogisticExpensePayload {
     @Size(max = 255)
     private String zoneClassPrice;
     @NotNull
-    @Size(max = 20)
-    private String effectiveDate;
+    private LocalDate effectiveDate;
     @NotNull
     private String productGroup;
     @NotNull

@@ -43,7 +43,8 @@ public class LogisticExpense {
     private String zoneClassPrice;
 
     @DynamoDBRangeKey(attributeName = "EFFECTIVE_DATE")
-    private String effectiveDate;
+    @DynamoDBTypeConverted( converter = LocalDateConverter.class )
+    private LocalDate effectiveDate;
 
     @DynamoDBAttribute(attributeName = "PRODUCT_GROUP")
     private String productGroup;

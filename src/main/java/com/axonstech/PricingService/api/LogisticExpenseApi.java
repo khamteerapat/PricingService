@@ -2,20 +2,27 @@ package com.axonstech.PricingService.api;
 
 import com.axonstech.PricingService.model.LogisticExpense;
 import com.axonstech.PricingService.payload.LogisticExpensePayload;
+import com.axonstech.PricingService.payload.api.ApiResponsePayload;
 import com.axonstech.PricingService.service.LogisticExpenseService;
-import com.axonstech.PricingService.utils.ExcelHelper;
+import com.axonstech.PricingService.utils.ExcelUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/logistic-expense")
 public class LogisticExpenseApi {
-
     private static final String RETURN_MESSAGE = "Success";
+    private static final String HEADER_COMPANY_CODE = "Company-Code";
+    private static final String HEADER_USER = "User";
+
 
     private final LogisticExpenseService logisticExpenseService;
     public LogisticExpenseApi(LogisticExpenseService logisticExpenseService) {
@@ -23,41 +30,67 @@ public class LogisticExpenseApi {
     }
 
     @GetMapping("/list")
-    public List<LogisticExpense> getAllLogisticExpense(){
-        return logisticExpenseService.getAllLogisticExpense();
+    public ResponseEntity<ApiResponsePayload<List<LogisticExpense>>> getAllLogisticExpense(){
+        List<LogisticExpense> responseList = logisticExpenseService.getAllLogisticExpense();
+        return ResponseEntity.ok( new ApiResponsePayload<>(RETURN_MESSAGE,responseList,null));
     }
 
     @GetMapping("/get")
-    public LogisticExpense getByKeyLogisticExpense(@RequestParam String key, @RequestParam String sortKey){
-        return logisticExpenseService.getByKeyLogisticExpense(key,sortKey);
+    public ResponseEntity<ApiResponsePayload<LogisticExpense>> getByKeyLogisticExpense(@RequestParam String key, @RequestParam String sortKey){
+        LogisticExpense logisticExpense = logisticExpenseService.getByKeyLogisticExpense(key,sortKey);
+        return ResponseEntity.ok(new ApiResponsePayload<>(RETURN_MESSAGE,logisticExpense,null));
     }
 
     @PostMapping("/create")
-    public String createLogisticExpense(@Valid @RequestBody LogisticExpensePayload logisticExpensePayload){
-        logisticExpenseService.createLogisticExpense(logisticExpensePayload);
-        return RETURN_MESSAGE;
+    public ResponseEntity<ApiResponsePayload<String>>  createLogisticExpense(HttpServletRequest request, @Valid @RequestBody LogisticExpensePayload logisticExpensePayload){
+        String companyCode = request.getHeader(HEADER_COMPANY_CODE);
+        String user = request.getHeader(HEADER_USER);
+        if(user == null || companyCode == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        else {
+            logisticExpenseService.createLogisticExpense(user, companyCode, logisticExpensePayload);
+            return ResponseEntity.ok(new ApiResponsePayload<>(RETURN_MESSAGE,null,null));
+        }
     }
 
     @PutMapping("/update")
-    public String updateLogisticExpense(@RequestParam String key, @RequestParam String sortKey,@Valid @RequestBody LogisticExpensePayload logisticExpensePayload){
-        logisticExpenseService.updateLogisticExpense(key,sortKey,logisticExpensePayload);
-        return RETURN_MESSAGE;
+    public ResponseEntity<ApiResponsePayload<String>> updateLogisticExpense(HttpServletRequest request,@Valid @RequestBody LogisticExpensePayload logisticExpensePayload){
+        String companyCode = request.getHeader(HEADER_COMPANY_CODE);
+        String user = request.getHeader(HEADER_USER);
+        if(user == null || companyCode == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        else {
+            logisticExpenseService.updateLogisticExpense(user, companyCode, logisticExpensePayload);
+            return ResponseEntity.ok(new ApiResponsePayload<>(RETURN_MESSAGE,null,null));
+        }
     }
 
     @DeleteMapping("/delete")
-    public String deleteLogisticExpense(@RequestParam String key, @RequestParam String sortKey){
+    public ResponseEntity<ApiResponsePayload<String>> deleteLogisticExpense(@RequestParam String key, @RequestParam LocalDate sortKey){
         logisticExpenseService.deleteLogisticExpense(key,sortKey);
-        return RETURN_MESSAGE;
+        return ResponseEntity.ok(new ApiResponsePayload<>(RETURN_MESSAGE,null,null));
     }
 
     @PostMapping("/upload")
-    public String uploadLogisticExpense(@RequestBody MultipartFile file){
-        if (ExcelHelper.hasExcelFormat(file)) {
-            logisticExpenseService.uploadLogisticExpense(file);
-            return RETURN_MESSAGE;
+    public ResponseEntity<ApiResponsePayload<String>> uploadLogisticExpense(HttpServletRequest request, @RequestBody MultipartFile file){
+        String companyCode = request.getHeader(HEADER_COMPANY_CODE);
+        String user = request.getHeader(HEADER_USER);
+        if(user == null || companyCode == null){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponsePayload<>("Bad Request.",null,null));
         }
-        else{
-            return "Please upload an excel file!";
+        else {
+            if (ExcelUtil.hasExcelFormat(file)) {
+                logisticExpenseService.uploadLogisticExpense(user,companyCode, file);
+                return ResponseEntity.ok(new ApiResponsePayload<>(RETURN_MESSAGE,null,null));
+            } else {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponsePayload<>("Please upload an excel file!",null,null));
+            }
         }
     }
 }
